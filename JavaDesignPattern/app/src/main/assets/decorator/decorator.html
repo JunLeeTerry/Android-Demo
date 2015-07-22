@@ -1,0 +1,118 @@
+<html>
+<head>
+    <link rel="stylesheet" href="file:///android_asset/designpattern.css" type="text/css" />
+</head>
+<body>
+<p>Decorator pattern allows a user to add new functionality to an existing object without altering its structure. This type of design pattern comes under structural pattern as this pattern acts as a wrapper to existing class.</p>
+<p>This pattern creates a decorator class which wraps the original class and provides additional functionality keeping class methods signature intact.</p>
+<p>We are demonstrating the use of decorator pattern via following example in which we will decorate a shape with some color without alter shape class.</p>
+<h2>Implementation</h2>
+<p>We're going to create a <i>Shape</i> interface and concrete classes implementing the <i>Shape</i> interface. We will then create an abstract decorator class <i>ShapeDecorator</i> implementing the <i>Shape</i> interface and having <i>Shape</i> object as its instance variable.</p>
+<p><i>RedShapeDecorator</i> is concrete class implementing <i>ShapeDecorator</i>. <p><i>DecoratorPatternDemo</i>, our demo class will use <i>RedShapeDecorator</i> to decorate <i>Shape</i> objects.</p>
+<img src="file:///android_asset/decorator/decorator_pattern_uml_diagram.jpg" alt="Decorator Pattern UML Diagram" />
+<h2>Step 1</h2>
+<p>Create an interface.</p>
+<p><i>Shape.java</i></p>
+<pre class="prettyprint notranslate">
+public interface Shape {
+   void draw();
+}
+</pre>
+<h2>Step 2</h2>
+<p>Create concrete classes implementing the same interface.</p>
+<p><i>Rectangle.java</i></p>
+<pre class="prettyprint notranslate">
+public class Rectangle implements Shape {
+
+   @Override
+   public void draw() {
+      System.out.println("Shape: Rectangle");
+   }
+}
+</pre>
+<p><i>Circle.java</i></p>
+<pre class="prettyprint notranslate">
+public class Circle implements Shape {
+
+   @Override
+   public void draw() {
+      System.out.println("Shape: Circle");
+   }
+}
+</pre>
+<h2>Step 3</h2>
+<p>Create abstract decorator class implementing the <i>Shape</i> interface.</p>
+<p><i>ShapeDecorator.java</i></p>
+<pre class="prettyprint notranslate">
+public abstract class ShapeDecorator implements Shape {
+   protected Shape decoratedShape;
+
+   public ShapeDecorator(Shape decoratedShape){
+      this.decoratedShape = decoratedShape;
+   }
+
+   public void draw(){
+      decoratedShape.draw();
+   }
+}
+</pre>
+<h2>Step 4</h2>
+<p>Create concrete decorator class extending the <i>ShapeDecorator</i> class.</p>
+<p><i>RedShapeDecorator.java</i></p>
+<pre class="prettyprint notranslate">
+public class RedShapeDecorator extends ShapeDecorator {
+
+   public RedShapeDecorator(Shape decoratedShape) {
+      super(decoratedShape);
+   }
+
+   @Override
+   public void draw() {
+      decoratedShape.draw();
+      setRedBorder(decoratedShape);
+   }
+
+   private void setRedBorder(Shape decoratedShape){
+      System.out.println("Border Color: Red");
+   }
+}
+</pre>
+<h2>Step 5</h2>
+<p>Use the <i>RedShapeDecorator</i> to decorate <i>Shape</i> objects.</p>
+<p><i>DecoratorPatternDemo.java</i></p>
+<pre class="prettyprint notranslate">
+public class DecoratorPatternDemo {
+   public static void main(String[] args) {
+
+      Shape circle = new Circle();
+
+      Shape redCircle = new RedShapeDecorator(new Circle());
+
+      Shape redRectangle = new RedShapeDecorator(new Rectangle());
+      System.out.println("Circle with normal border");
+      circle.draw();
+
+      System.out.println("\nCircle of red border");
+      redCircle.draw();
+
+      System.out.println("\nRectangle of red border");
+      redRectangle.draw();
+   }
+}
+</pre>
+<h2>Step 6</h2>
+<p>Verify the output.</p>
+<pre class="result">
+Circle with normal border
+Shape: Circle
+
+Circle of red border
+Shape: Circle
+Border Color: Red
+
+Rectangle of red border
+Shape: Rectangle
+Border Color: Red
+</pre>
+</body>
+</html>

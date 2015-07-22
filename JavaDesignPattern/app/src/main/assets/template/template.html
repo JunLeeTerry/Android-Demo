@@ -1,0 +1,103 @@
+<html>
+<head>
+    <link rel="stylesheet" href="file:///android_asset/designpattern.css" type="text/css" />
+</head>
+<body>
+<p>In Template pattern, an abstract class exposes defined way(s)/template(s) to execute its methods. Its subclasses can override the method implementation as per need but the invocation is to be in the same way as defined by an abstract class. This pattern comes under behavior pattern category.</p>
+<h2>Implementation</h2>
+<p>We are going to create a <i>Game</i> abstract class defining operations with a template method set to be final so that it cannot be overridden. <i>Cricket</i> and <i>Football</i> are concrete classes that extend <i>Game</i> and override its methods.</p>
+<p><i>TemplatePatternDemo</i>, our demo class, will use <i>Game</i> to demonstrate use of template pattern.</p>
+<img src="file:///android_asset/template/template_pattern_uml_diagram.jpg" alt="Template Pattern UML Diagram" />
+<h2>Step 1</h2>
+<p>Create an abstract class with a template method being final.</p>
+<p><i>Game.java</i></p>
+<pre class="prettyprint notranslate">
+public abstract class Game {
+   abstract void initialize();
+   abstract void startPlay();
+   abstract void endPlay();
+
+   //template method
+   public final void play(){
+
+      //initialize the game
+      initialize();
+
+      //start game
+      startPlay();
+
+      //end game
+      endPlay();
+   }
+}
+</pre>
+<h2>Step 2</h2>
+<p>Create concrete classes extending the above class.</p>
+<p><i>Cricket.java</i></p>
+<pre class="prettyprint notranslate">
+public class Cricket extends Game {
+
+   @Override
+   void endPlay() {
+      System.out.println("Cricket Game Finished!");
+   }
+
+   @Override
+   void initialize() {
+      System.out.println("Cricket Game Initialized! Start playing.");
+   }
+
+   @Override
+   void startPlay() {
+      System.out.println("Cricket Game Started. Enjoy the game!");
+   }
+}
+</pre>
+<p><i>Football.java</i></p>
+<pre class="prettyprint notranslate">
+public class Football extends Game {
+
+   @Override
+   void endPlay() {
+      System.out.println("Football Game Finished!");
+   }
+
+   @Override
+   void initialize() {
+      System.out.println("Football Game Initialized! Start playing.");
+   }
+
+   @Override
+   void startPlay() {
+      System.out.println("Football Game Started. Enjoy the game!");
+   }
+}
+</pre>
+<h2>Step 3</h2>
+<p>Use the <i>Game</i>'s  template method play() to demonstrate a defined way of playing game.</p>
+<p><i>TemplatePatternDemo.java</i></p>
+<pre class="prettyprint notranslate">
+public class TemplatePatternDemo {
+   public static void main(String[] args) {
+
+      Game game = new Cricket();
+      game.play();
+      System.out.println();
+      game = new Football();
+      game.play();
+   }
+}
+</pre>
+<h2>Step 4</h2>
+<p>Verify the output.</p>
+<pre class="result">
+Cricket Game Initialized! Start playing.
+Cricket Game Started. Enjoy the game!
+Cricket Game Finished!
+
+Football Game Initialized! Start playing.
+Football Game Started. Enjoy the game!
+Football Game Finished!
+</pre>
+</body>
+</html>

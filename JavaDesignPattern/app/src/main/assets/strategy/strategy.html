@@ -1,0 +1,90 @@
+<html>
+<head>
+    <link rel="stylesheet" href="file:///android_asset/designpattern.css" type="text/css" />
+</head>
+<body>
+<p>In Strategy pattern, a class behavior or its algorithm can be changed at run time. This type of design pattern comes under behavior pattern.</p>
+<p>In Strategy pattern, we create objects which represent various strategies and a context object whose behavior varies as per its strategy object. The strategy object changes the executing algorithm of the context object.</p>
+<h2>Implementation</h2>
+<p>We are going to create a <i>Strategy</i> interface defining an action and concrete strategy classes implementing the <i>Strategy</i> interface. <i>Context</i> is a class which uses a Strategy.</p>
+<p><i>StrategyPatternDemo</i>, our demo class, will use <i>Context</i> and strategy objects to demonstrate change in Context behaviour based on strategy it deploys or uses.</p>
+<img src="file:///android_asset/strategy/strategy_pattern_uml_diagram.jpg" alt="Strategy Pattern UML Diagram" />
+<h2>Step 1</h2>
+<p>Create an interface.</p>
+<p><i>Strategy.java</i></p>
+<pre class="prettyprint notranslate">
+public interface Strategy {
+   public int doOperation(int num1, int num2);
+}
+</pre>
+<h2>Step 2</h2>
+<p>Create concrete classes implementing the same interface.</p>
+<p><i>OperationAdd.java</i></p>
+<pre class="prettyprint notranslate">
+public class OperationAdd implements Strategy{
+   @Override
+   public int doOperation(int num1, int num2) {
+      return num1 + num2;
+   }
+}
+</pre>
+<p><i>OperationSubstract.java</i></p>
+<pre class="prettyprint notranslate">
+public class OperationSubstract implements Strategy{
+   @Override
+   public int doOperation(int num1, int num2) {
+      return num1 - num2;
+   }
+}
+</pre>
+<p><i>OperationMultiply.java</i></p>
+<pre class="prettyprint notranslate">
+public class OperationMultiply implements Strategy{
+   @Override
+   public int doOperation(int num1, int num2) {
+      return num1 * num2;
+   }
+}
+</pre>
+<h2>Step 3</h2>
+<p>Create <i>Context</i> Class.</p>
+<p><i>Context.java</i></p>
+<pre class="prettyprint notranslate">
+public class Context {
+   private Strategy strategy;
+
+   public Context(Strategy strategy){
+      this.strategy = strategy;
+   }
+
+   public int executeStrategy(int num1, int num2){
+      return strategy.doOperation(num1, num2);
+   }
+}
+</pre>
+<h2>Step 4</h2>
+<p>Use the <i>Context</i> to see change in behaviour when it changes its <i>Strategy</i>.</p>
+<p><i>StrategyPatternDemo.java</i></p>
+<pre class="prettyprint notranslate">
+public class StrategyPatternDemo {
+   public static void main(String[] args) {
+      Context context = new Context(new OperationAdd());
+      System.out.println("10 + 5 = " + context.executeStrategy(10, 5));
+
+      context = new Context(new OperationSubstract());
+      System.out.println("10 - 5 = " + context.executeStrategy(10, 5));
+
+      context = new Context(new OperationMultiply());
+      System.out.println("10 * 5 = " + context.executeStrategy(10, 5));
+   }
+}
+</pre>
+<h2>Step 5</h2>
+<p>Verify the output.</p>
+<pre class="result">
+10 + 5 = 15
+10 - 5 = 5
+10 * 5 = 50
+</pre>
+</body>
+</html>

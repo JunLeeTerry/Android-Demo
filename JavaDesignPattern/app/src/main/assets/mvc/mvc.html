@@ -1,0 +1,129 @@
+<html>
+<head>
+    <link rel="stylesheet" href="file:///android_asset/designpattern.css" type="text/css" />
+</head>
+<body>
+<p>MVC Pattern stands for Model-View-Controller Pattern. This pattern is used to separate application's concerns.</p>
+<ul class="list">
+    <li><p><b>Model</b> - Model represents an object or JAVA POJO carrying data. It can also have logic to update controller if its data changes.</p></li>
+    <li><p><b>View</b> - View represents the visualization of the data that model contains.</p></li>
+    <li><p><b>Controller</b> - Controller acts on both model and view. It controls the data flow into model object and updates the view whenever data changes. It keeps view and model separate.</p></li>
+</ul>
+<h2>Implementation</h2>
+<p>We are going to create a <i>Student</i> object acting as a model.<i>StudentView</i> will be a view class which can print student details on console and <i>StudentController</i> is the controller class responsible to store data in <i>Student</i> object and update view <i>StudentView</i> accordingly.</p>
+<p><i>MVCPatternDemo</i>, our demo class, will use <i>StudentController</i> to demonstrate use of MVC pattern.</p>
+<img src="file:///android_asset/mvc/mvc_pattern_uml_diagram.jpg" alt="MVC Pattern UML Diagram" />
+<h2>Step 1</h2>
+<p>Create Model.</p>
+<p><i>Student.java</i></p>
+<pre class="prettyprint notranslate">
+public class Student {
+   private String rollNo;
+   private String name;
+
+   public String getRollNo() {
+      return rollNo;
+   }
+
+   public void setRollNo(String rollNo) {
+      this.rollNo = rollNo;
+   }
+
+   public String getName() {
+      return name;
+   }
+
+   public void setName(String name) {
+      this.name = name;
+   }
+}
+</pre>
+<h2>Step 2</h2>
+<p>Create View.</p>
+<p><i>StudentView.java</i></p>
+<pre class="prettyprint notranslate">
+public class StudentView {
+   public void printStudentDetails(String studentName, String studentRollNo){
+      System.out.println("Student: ");
+      System.out.println("Name: " + studentName);
+      System.out.println("Roll No: " + studentRollNo);
+   }
+}
+</pre>
+<h2>Step 3</h2>
+<p>Create Controller.</p>
+<p><i>StudentController.java</i></p>
+<pre class="prettyprint notranslate">
+public class StudentController {
+   private Student model;
+   private StudentView view;
+
+   public StudentController(Student model, StudentView view){
+      this.model = model;
+      this.view = view;
+   }
+
+   public void setStudentName(String name){
+      model.setName(name);
+   }
+
+   public String getStudentName(){
+      return model.getName();
+   }
+
+   public void setStudentRollNo(String rollNo){
+      model.setRollNo(rollNo);
+   }
+
+   public String getStudentRollNo(){
+      return model.getRollNo();
+   }
+
+   public void updateView(){
+      view.printStudentDetails(model.getName(), model.getRollNo());
+   }
+}
+</pre>
+<h2>Step 4</h2>
+<p>Use the <i>StudentController</i> methods to demonstrate MVC design pattern usage.</p>
+<p><i>MVCPatternDemo.java</i></p>
+<pre class="prettyprint notranslate">
+public class MVCPatternDemo {
+   public static void main(String[] args) {
+
+      //fetch student record based on his roll no from the database
+      Student model  = retriveStudentFromDatabase();
+
+      //Create a view : to write student details on console
+      StudentView view = new StudentView();
+
+      StudentController controller = new StudentController(model, view);
+
+      controller.updateView();
+
+      //update model data
+      controller.setStudentName("John");
+
+      controller.updateView();
+   }
+
+   private static Student retriveStudentFromDatabase(){
+      Student student = new Student();
+      student.setName("Robert");
+      student.setRollNo("10");
+      return student;
+   }
+}
+</pre>
+<h2>Step 5</h2>
+<p>Verify the output.</p>
+<pre class="result">
+Student:
+Name: Robert
+Roll No: 10
+Student:
+Name: John
+Roll No: 10
+</pre>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<html>
+<head>
+    <link rel="stylesheet" href="file:///android_asset/designpattern.css" type="text/css" />
+</head>
+<body>
+<p>Interpreter pattern provides a way to evaluate language grammar or expression. This type of pattern comes under behavioral pattern. This pattern involves implementing an expression interface which tells to interpret a particular context. This pattern is used in SQL parsing, symbol processing engine etc.</p>
+<h2>Implementation</h2>
+<p>We are going to create an interface  <i>Expression</i>  and concrete classes implementing the <i>Expression</i> interface. A class <i>TerminalExpression</i> is defined which acts as a main interpreter of context in question. Other classes <i>OrExpression</i>, <i>AndExpression</i> are used to create combinational expressions.</p>
+<p><i>InterpreterPatternDemo</i>, our demo class, will use <i>Expression</i> class to create rules and demonstrate parsing of expressions.</p>
+<img src="file:///android_asset/interpreter/interpreter_pattern_uml_diagram.jpg" alt="Interpreter Pattern UML Diagram" />
+<h2>Step 1 </h2>
+<p>Create an expression interface.</p>
+<p><i>Expression.java</i></p>
+<pre class="prettyprint notranslate">
+public interface Expression {
+   public boolean interpret(String context);
+}
+</pre>
+<h2>Step 2</h2>
+<p>Create concrete classes implementing the above interface.</p>
+<p><i>TerminalExpression.java</i></p>
+<pre class="prettyprint notranslate">
+public class TerminalExpression implements Expression {
+
+   private String data;
+
+   public TerminalExpression(String data){
+      this.data = data;
+   }
+
+   @Override
+   public boolean interpret(String context) {
+
+      if(context.contains(data)){
+         return true;
+      }
+      return false;
+   }
+}
+</pre>
+<p><i>OrExpression.java</i></p>
+<pre class="prettyprint notranslate">
+public class OrExpression implements Expression {
+
+   private Expression expr1 = null;
+   private Expression expr2 = null;
+
+   public OrExpression(Expression expr1, Expression expr2) {
+      this.expr1 = expr1;
+      this.expr2 = expr2;
+   }
+
+   @Override
+   public boolean interpret(String context) {
+      return expr1.interpret(context) || expr2.interpret(context);
+   }
+}
+</pre>
+<p><i>AndExpression.java</i></p>
+<pre class="prettyprint notranslate">
+public class AndExpression implements Expression {
+
+   private Expression expr1 = null;
+   private Expression expr2 = null;
+
+   public AndExpression(Expression expr1, Expression expr2) {
+      this.expr1 = expr1;
+      this.expr2 = expr2;
+   }
+
+   @Override
+   public boolean interpret(String context) {
+      return expr1.interpret(context) &amp;&amp; expr2.interpret(context);
+   }
+}
+</pre>
+<h2>Step 3</h2>
+<p><i>InterpreterPatternDemo</i> uses <i>Expression</i> class to create rules and then parse them.</p>
+<p><i>InterpreterPatternDemo.java</i></p>
+<pre class="prettyprint notranslate">
+public class InterpreterPatternDemo {
+
+   //Rule: Robert and John are male
+   public static Expression getMaleExpression(){
+      Expression robert = new TerminalExpression("Robert");
+      Expression john = new TerminalExpression("John");
+      return new OrExpression(robert, john);
+   }
+
+   //Rule: Julie is a married women
+   public static Expression getMarriedWomanExpression(){
+      Expression julie = new TerminalExpression("Julie");
+      Expression married = new TerminalExpression("Married");
+      return new AndExpression(julie, married);
+   }
+
+   public static void main(String[] args) {
+      Expression isMale = getMaleExpression();
+      Expression isMarriedWoman = getMarriedWomanExpression();
+
+      System.out.println("John is male? " + isMale.interpret("John"));
+      System.out.println("Julie is a married women? " + isMarriedWoman.interpret("Married Julie"));
+   }
+}
+</pre>
+<h2>Step 4</h2>
+<p>Verify the output.</p>
+<pre class="result">
+John is male? true
+Julie is a married women? true
+</pre>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">Design Pattern</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="creational_patterns">Creational\nPatterns</string>
+    <string name="structural_patterns">Structural\nPatterns</string>
+    <string name="behavioral_patterns">Behavioral\nPatterns</string>
+    <string name="j2ee_patterns">J2EE\nPatterns</string>
+    <string name="java_design_pattern">Java Design Pattern</string>
+
+    <string name="about_us">About Us</string>
+    <string name="contact_us">Contact Us</string>
+    <string name="proposal">Proposal</string>
+
+    <string name="contact_description">Email: terry_love_c@sina.com\n
+    \nSUDAmail:1117404043@suda.edu.cn\n\nQQ: 44837170\n\n\n
+    You can directly send email to us by clicking on the &#060;Proposal&#062; tag.</string>
+
+    <string name="chief_designer">Designer &#038; Programmer</string>
+    <string name="art_designer">Art Designer</string>
+    <string name="terry">Terry</string>
+    <string name="pitos">Pitos</string>
+    <string name="terry_description">
+        Bachelor of Engineering.
+        He is really a handsome man!
+    </string>
+    <string name="pitos_description">Bachelor of Engineering.Single.
+        Always think himself is a handsome man!</string>
+
+    <string name="version">Version</string>
+    <string name="version_description">Version&#058; 1&#046;0&#046;0\n\n\n\n\n\nCopyright&#169; Terry and Pitos.
+        All rights unreserved. &#058;&#041;</string>
+</resources>

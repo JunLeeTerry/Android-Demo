@@ -1,0 +1,100 @@
+<html>
+<head>
+    <link rel="stylesheet" href="file:///android_asset/designpattern.css" type="text/css" />
+</head>
+<body>
+<p>Facade pattern hides the complexities of the system and provides an interface to the client using which the client can access the system. This type of design pattern comes under structural pattern as this pattern adds an interface to existing system to hide its complexities.</p>
+<p>This pattern involves a single class which provides simplified methods required by client and delegates calls to methods of existing  system classes.</p>
+<h2>Implementation</h2>
+<p>We are going to create a <i>Shape</i> interface and concrete classes implementing the <i>Shape</i> interface. A facade class <i>ShapeMaker</i> is defined as a next step.</p>
+<p><i>ShapeMaker</i> class uses the concrete classes to delegate user calls to these classes. <i>FacadePatternDemo</i>, our demo class, will use <i>ShapeMaker</i> class to show the results.</p>
+<img src="file:///android_asset/facade/facade_pattern_uml_diagram.jpg" alt="Facade Pattern UML Diagram" />
+<h2>Step 1</h2>
+<p>Create an interface.</p>
+<p><i>Shape.java</i></p>
+<pre class="prettyprint notranslate">
+public interface Shape {
+   void draw();
+}
+</pre>
+<h2>Step 2</h2>
+<p>Create concrete classes implementing the same interface.</p>
+<p><i>Rectangle.java</i></p>
+<pre class="prettyprint notranslate">
+public class Rectangle implements Shape {
+
+   @Override
+   public void draw() {
+      System.out.println("Rectangle::draw()");
+   }
+}
+</pre>
+<p><i>Square.java</i></p>
+<pre class="prettyprint notranslate">
+public class Square implements Shape {
+
+   @Override
+   public void draw() {
+      System.out.println("Square::draw()");
+   }
+}
+</pre>
+<p><i>Circle.java</i></p>
+<pre class="prettyprint notranslate">
+public class Circle implements Shape {
+
+   @Override
+   public void draw() {
+      System.out.println("Circle::draw()");
+   }
+}
+</pre>
+<h2>Step 3</h2>
+<p>Create a facade class.</p>
+<p><i>ShapeMaker.java</i></p>
+<pre class="prettyprint notranslate">
+public class ShapeMaker {
+   private Shape circle;
+   private Shape rectangle;
+   private Shape square;
+
+   public ShapeMaker() {
+      circle = new Circle();
+      rectangle = new Rectangle();
+      square = new Square();
+   }
+
+   public void drawCircle(){
+      circle.draw();
+   }
+   public void drawRectangle(){
+      rectangle.draw();
+   }
+   public void drawSquare(){
+      square.draw();
+   }
+}
+</pre>
+<h2>Step 4</h2>
+<p>Use the facade to draw various types of shapes.</p>
+<p><i>FacadePatternDemo.java</i></p>
+<pre class="prettyprint notranslate">
+public class FacadePatternDemo {
+   public static void main(String[] args) {
+      ShapeMaker shapeMaker = new ShapeMaker();
+
+      shapeMaker.drawCircle();
+      shapeMaker.drawRectangle();
+      shapeMaker.drawSquare();
+   }
+}
+</pre>
+<h2>Step 5</h2>
+<p>Verify the output.</p>
+<pre class="result">
+Circle::draw()
+Rectangle::draw()
+Square::draw()
+</pre>
+</body>
+</html>

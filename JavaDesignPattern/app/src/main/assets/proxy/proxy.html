@@ -1,0 +1,90 @@
+<html>
+<head>
+    <link rel="stylesheet" href="file:///android_asset/designpattern.css" type="text/css" />
+</head>
+<body>
+<p>In proxy pattern, a class represents functionality of another class. This type of design pattern comes under structural pattern.</p>
+<p>In proxy pattern, we create object having original object to interface its functionality to outer world.</p>
+<h2>Implementation</h2>
+<p>We are going to create an <i>Image</i> interface and concrete classes implementing the <i>Image</i> interface. <i>ProxyImage</i> is a a proxy class to reduce memory footprint of <i>RealImage</i> object loading.</p>
+<p><i>ProxyPatternDemo</i>, our demo class, will use <i>ProxyImage</i> to get an <i>Image</i> object to load and display as it needs.</p>
+<img src="file:///android_asset/proxy/proxy_pattern_uml_diagram.jpg" alt="Proxy Pattern UML Diagram" />
+<h2>Step 1</h2>
+<p>Create an interface.</p>
+<p><i>Image.java</i></p>
+<pre class="prettyprint notranslate">
+public interface Image {
+   void display();
+}
+</pre>
+<h2>Step 2</h2>
+<p>Create concrete classes implementing the same interface.</p>
+<p><i>RealImage.java</i></p>
+<pre class="prettyprint notranslate">
+public class RealImage implements Image {
+
+   private String fileName;
+
+   public RealImage(String fileName){
+      this.fileName = fileName;
+      loadFromDisk(fileName);
+   }
+
+   @Override
+   public void display() {
+      System.out.println("Displaying " + fileName);
+   }
+
+   private void loadFromDisk(String fileName){
+      System.out.println("Loading " + fileName);
+   }
+}
+</pre>
+<p><i>ProxyImage.java</i></p>
+<pre class="prettyprint notranslate">
+public class ProxyImage implements Image{
+
+   private RealImage realImage;
+   private String fileName;
+
+   public ProxyImage(String fileName){
+      this.fileName = fileName;
+   }
+
+   @Override
+   public void display() {
+      if(realImage == null){
+         realImage = new RealImage(fileName);
+      }
+      realImage.display();
+   }
+}
+</pre>
+<h2>Step 3</h2>
+<p>Use the <i>ProxyImage</i> to get object of <i>RealImage</i> class when required.</p>
+<p><i>ProxyPatternDemo.java</i></p>
+<pre class="prettyprint notranslate">
+public class ProxyPatternDemo {
+
+   public static void main(String[] args) {
+      Image image = new ProxyImage("test_10mb.jpg");
+
+      //image will be loaded from disk
+      image.display();
+      System.out.println("");
+
+      //image will not be loaded from disk
+      image.display();
+   }
+}
+</pre>
+<h2>Step 4</h2>
+<p>Verify the output.</p>
+<pre class="result">
+Loading test_10mb.jpg
+Displaying test_10mb.jpg
+
+Displaying test_10mb.jpg
+</pre>
+</body>
+</html>

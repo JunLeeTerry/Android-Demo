@@ -1,0 +1,126 @@
+<html>
+<head>
+    <link rel="stylesheet" href="file:///android_asset/designpattern.css" type="text/css" />
+</head>
+<body>
+<p>Composite Entity pattern is used in EJB persistence mechanism. A Composite entity is an EJB entity bean which represents a graph of objects. When a composite entity is updated, internally dependent objects beans get updated automatically as being managed by EJB entity bean. Following are the participants in Composite Entity Bean.</p>
+<ul class="list">
+    <li><p><b>Composite Entity</b> - It is primary entity bean. It can be coarse grained or can contain a coarse grained object to be used for persistence purpose.</p></li>
+    <li><p><b>Coarse-Grained Object</b> - This object contains dependent objects. It has its own life cycle and also manages life cycle of dependent objects.</p></li>
+    <li><p><b>Dependent Object</b> - Dependent object is an object which depends on coarse grained object for its persistence lifecycle.</p></li>
+    <li><p><b>Strategies</b> - Strategies represents how to implement a Composite Entity.</p></li>
+</ul>
+<h2>Implementation</h2>
+<p>We are going to create <i>CompositeEntity</i> object acting as CompositeEntity. <i>CoarseGrainedObject</i> will be a class which contains dependent objects. <i>CompositeEntityPatternDemo</i>, our demo class will use <i>Client</i> class to demonstrate use of Composite Entity pattern.</p>
+<img src="file:///android_asset/composite_entity/compositeentity_pattern_uml_diagram.jpg" alt="Composite Entity Pattern UML Diagram" />
+<h2>Step 1</h2>
+<p>Create Dependent Objects.</p>
+<p><i>DependentObject1.java</i></p>
+<pre class="prettyprint notranslate">
+public class DependentObject1 {
+
+   private String data;
+
+   public void setData(String data){
+      this.data = data;
+   }
+
+   public String getData(){
+      return data;
+   }
+}
+</pre>
+<p><i>DependentObject2.java</i></p>
+<pre class="prettyprint notranslate">
+public class DependentObject2 {
+
+   private String data;
+
+   public void setData(String data){
+      this.data = data;
+   }
+
+   public String getData(){
+      return data;
+   }
+}
+</pre>
+<h2>Step 2</h2>
+<p>Create Coarse Grained Object.</p>
+<p><i>CoarseGrainedObject.java</i></p>
+<pre class="prettyprint notranslate">
+public class CoarseGrainedObject {
+   DependentObject1 do1 = new DependentObject1();
+   DependentObject2 do2 = new DependentObject2();
+
+   public void setData(String data1, String data2){
+      do1.setData(data1);
+      do2.setData(data2);
+   }
+
+   public String[] getData(){
+      return new String[] {do1.getData(),do2.getData()};
+   }
+}
+</pre>
+<h2>Step 3</h2>
+<p>Create Composite Entity.</p>
+<p><i>CompositeEntity.java</i></p>
+<pre class="prettyprint notranslate">
+public class CompositeEntity {
+   private CoarseGrainedObject cgo = new CoarseGrainedObject();
+
+   public void setData(String data1, String data2){
+      cgo.setData(data1, data2);
+   }
+
+   public String[] getData(){
+      return cgo.getData();
+   }
+}
+</pre>
+<h2>Step 4</h2>
+<p>Create Client class to use Composite Entity.</p>
+<p><i>Client.java</i></p>
+<pre class="prettyprint notranslate">
+public class Client {
+   private CompositeEntity compositeEntity = new CompositeEntity();
+
+   public void printData(){
+
+      for (int i = 0; i &lt; compositeEntity.getData().length; i++) {
+         System.out.println("Data: " + compositeEntity.getData()[i]);
+      }
+   }
+
+   public void setData(String data1, String data2){
+      compositeEntity.setData(data1, data2);
+   }
+}
+</pre>
+<h2>Step 5</h2>
+<p>Use the <i>Client</i> to demonstrate Composite Entity design pattern usage.</p>
+<p><i>CompositeEntityPatternDemo.java</i></p>
+<pre class="prettyprint notranslate">
+public class CompositeEntityPatternDemo {
+   public static void main(String[] args) {
+
+       Client client = new Client();
+       client.setData("Test", "Data");
+       client.printData();
+       client.setData("Second Test", "Data1");
+       client.printData();
+   }
+}
+
+</pre>
+<h2>Step 6</h2>
+<p>Verify the output.</p>
+<pre class="result">
+Data: Test
+Data: Data
+Data: Second Test
+Data: Data1
+</pre>
+</body>
+</html>

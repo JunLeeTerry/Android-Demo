@@ -1,0 +1,141 @@
+<html>
+<head>
+    <link rel="stylesheet" href="file:///android_asset/designpattern.css" type="text/css" />
+</head>
+<body>
+<p>The intercepting filter design pattern is used when we want to do some pre-processing / post-processing with request or response of the application. Filters are defined and applied on the request before passing the request to actual target application. Filters can do the authentication/ authorization/ logging or tracking of request and then pass the requests to corresponding handlers. Following are the entities of this type of design pattern.</p>
+<ul class="list">
+    <li><p><b>Filter</b> - Filter which will performs certain task prior or after execution of request by request handler.</p></li>
+    <li><p><b>Filter Chain</b> - Filter Chain carries multiple filters and help to execute them in defined order on target.</p></li>
+    <li><p><b>Target</b> - Target object is the request handler</p></li>
+    <li><p><b>Filter Manager</b> - Filter Manager manages the filters and Filter Chain.</p></li>
+    <li><p><b>Client</b> - Client is the object who sends request to the Target object.</p></li>
+</ul>
+<h2>Implementation</h2>
+<p>We are going to create a <i>FilterChain</i>,<i>FilterManager</i>, <i>Target</i>, <i>Client</i> as various objects representing our entities.<i>AuthenticationFilter</i> and <i>DebugFilter</i> represent concrete filters.</p>
+<p><i>InterceptingFilterDemo</i>, our demo class, will use <i>Client</i> to demonstrate Intercepting Filter Design Pattern.</p>
+<img src="file:///android_asset/intercepting_filter/interceptingfilter_pattern_uml_diagram.jpg" alt="Intercepting Filter Pattern UML Diagram" />
+<h2>Step 1</h2>
+<p>Create Filter interface.</p>
+<p><i>Filter.java</i></p>
+<pre class="prettyprint notranslate">
+public interface Filter {
+   public void execute(String request);
+}
+</pre>
+<h2>Step 2</h2>
+<p>Create concrete filters.</p>
+<p><i>AuthenticationFilter.java</i></p>
+<pre class="prettyprint notranslate">
+public class AuthenticationFilter implements Filter {
+   public void execute(String request){
+      System.out.println("Authenticating request: " + request);
+   }
+}
+</pre>
+<p><i>DebugFilter.java</i></p>
+<pre class="prettyprint notranslate">
+public class DebugFilter implements Filter {
+   public void execute(String request){
+      System.out.println("request log: " + request);
+   }
+}
+</pre>
+<h2>Step 3</h2>
+<p>Create Target</p>
+<p><i>Target.java</i></p>
+<pre class="prettyprint notranslate">
+public class Target {
+   public void execute(String request){
+      System.out.println("Executing request: " + request);
+   }
+}
+</pre>
+<h2>Step 4</h2>
+<p>Create Filter Chain</p>
+<p><i>FilterChain.java</i></p>
+<pre class="prettyprint notranslate">
+import java.util.ArrayList;
+import java.util.List;
+
+public class FilterChain {
+   private List&lt;Filter&gt; filters = new ArrayList&lt;Filter&gt;();
+   private Target target;
+
+   public void addFilter(Filter filter){
+      filters.add(filter);
+   }
+
+   public void execute(String request){
+      for (Filter filter : filters) {
+         filter.execute(request);
+      }
+      target.execute(request);
+   }
+
+   public void setTarget(Target target){
+      this.target = target;
+   }
+}
+</pre>
+<h2>Step 5</h2>
+<p>Create Filter Manager</p>
+<p><i>FilterManager.java</i></p>
+<pre class="prettyprint notranslate">
+public class FilterManager {
+   FilterChain filterChain;
+
+   public FilterManager(Target target){
+      filterChain = new FilterChain();
+      filterChain.setTarget(target);
+   }
+   public void setFilter(Filter filter){
+      filterChain.addFilter(filter);
+   }
+
+   public void filterRequest(String request){
+      filterChain.execute(request);
+   }
+}
+</pre>
+<h2>Step 6</h2>
+<p>Create Client</p>
+<p><i>Client.java</i></p>
+<pre class="prettyprint notranslate">
+public class Client {
+   FilterManager filterManager;
+
+   public void setFilterManager(FilterManager filterManager){
+      this.filterManager = filterManager;
+   }
+
+   public void sendRequest(String request){
+      filterManager.filterRequest(request);
+   }
+}
+</pre>
+<h2>Step 7</h2>
+<p>Use the <i>Client</i> to demonstrate Intercepting Filter Design Pattern.</p>
+<p><i>InterceptingFilterDemo.java</i></p>
+<pre class="prettyprint notranslate">
+public class InterceptingFilterDemo {
+   public static void main(String[] args) {
+      FilterManager filterManager = new FilterManager(new Target());
+      filterManager.setFilter(new AuthenticationFilter());
+      filterManager.setFilter(new DebugFilter());
+
+      Client client = new Client();
+      client.setFilterManager(filterManager);
+      client.sendRequest("HOME");
+   }
+}
+</pre>
+<h2>Step 8</h2>
+<p>Verify the output.</p>
+<pre class="result">
+Authenticating request: HOME
+request log: HOME
+Executing request: HOME
+</pre>
+</body>
+</html>

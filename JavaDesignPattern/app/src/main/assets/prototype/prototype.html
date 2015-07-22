@@ -1,0 +1,154 @@
+<html>
+<head>
+    <link rel="stylesheet" href="file:///android_asset/designpattern.css" type="text/css" />
+</head>
+<body>
+<p>Prototype pattern refers to creating duplicate object while keeping performance in mind. This type of design pattern comes under creational pattern as this pattern provides one of the best ways to create an object.</p>
+<p>This pattern involves implementing a prototype interface which tells to create a clone of the current object. This pattern is used when creation of object directly is costly. For example, an object is to be created after a costly database operation. We can cache the object, returns its clone on next request and update the database as and when needed thus reducing database calls.</p>
+<h2>Implementation</h2>
+<p>We're going to create an abstract class <i>Shape</i>  and concrete classes extending the <i>Shape</i> class. A class <i>ShapeCache</i> is defined as a next step which stores shape objects in a <i>Hashtable</i> and returns their clone when requested.</p>
+<p><i>PrototypPatternDemo</i>, our demo class will use <i>ShapeCache</i> class to get a <i>Shape</i> object.</p>
+<img src="file:///android_asset/prototype/prototype_pattern_uml_diagram.jpg" alt="Prototype Pattern UML Diagram" />
+<h2>Step 1 </h2>
+<p>Create an abstract class implementing <i>Clonable</i> interface.</p>
+<p><i>Shape.java</i></p>
+<pre class="prettyprint notranslate">
+public abstract class Shape implements Cloneable {
+
+   private String id;
+   protected String type;
+
+   abstract void draw();
+
+   public String getType(){
+      return type;
+   }
+
+   public String getId() {
+      return id;
+   }
+
+   public void setId(String id) {
+      this.id = id;
+   }
+
+   public Object clone() {
+      Object clone = null;
+
+      try {
+         clone = super.clone();
+
+      } catch (CloneNotSupportedException e) {
+         e.printStackTrace();
+      }
+
+      return clone;
+   }
+}
+</pre>
+<h2>Step 2</h2>
+<p>Create concrete classes extending the above class.</p>
+<p><i>Rectangle.java</i></p>
+<pre class="prettyprint notranslate">
+public class Rectangle extends Shape {
+
+   public Rectangle(){
+     type = "Rectangle";
+   }
+
+   @Override
+   public void draw() {
+      System.out.println("Inside Rectangle::draw() method.");
+   }
+}
+</pre>
+<p><i>Square.java</i></p>
+<pre class="prettyprint notranslate">
+public class Square extends Shape {
+
+   public Square(){
+     type = "Square";
+   }
+
+   @Override
+   public void draw() {
+      System.out.println("Inside Square::draw() method.");
+   }
+}
+</pre>
+<p><i>Circle.java</i></p>
+<pre class="prettyprint notranslate">
+public class Circle extends Shape {
+
+   public Circle(){
+     type = "Circle";
+   }
+
+   @Override
+   public void draw() {
+      System.out.println("Inside Circle::draw() method.");
+   }
+}
+</pre>
+<h2>Step 3</h2>
+<p>Create a class to get concrete classes from database and store them in a <i>Hashtable</i>.</p>
+<p><i>ShapeCache.java</i></p>
+<pre class="prettyprint notranslate">
+import java.util.Hashtable;
+
+public class ShapeCache {
+
+   private static Hashtable&lt;String, Shape&gt; shapeMap  = new Hashtable&lt;String, Shape&gt;();
+
+   public static Shape getShape(String shapeId) {
+      Shape cachedShape = shapeMap.get(shapeId);
+      return (Shape) cachedShape.clone();
+   }
+
+   // for each shape run database query and create shape
+   // shapeMap.put(shapeKey, shape);
+   // for example, we are adding three shapes
+
+   public static void loadCache() {
+      Circle circle = new Circle();
+      circle.setId("1");
+      shapeMap.put(circle.getId(),circle);
+
+      Square square = new Square();
+      square.setId("2");
+      shapeMap.put(square.getId(),square);
+
+      Rectangle rectangle = new Rectangle();
+      rectangle.setId("3");
+      shapeMap.put(rectangle.getId(), rectangle);
+   }
+}
+</pre>
+<h2>Step 4</h2>
+<p><i>PrototypePatternDemo</i> uses <i>ShapeCache</i> class to get clones of shapes stored in a  <i>Hashtable</i>.</p>
+<p><i>PrototypePatternDemo.java</i></p>
+<pre class="prettyprint notranslate tryit">
+public class PrototypePatternDemo {
+   public static void main(String[] args) {
+      ShapeCache.loadCache();
+
+      Shape clonedShape = (Shape) ShapeCache.getShape("1");
+      System.out.println("Shape : " + clonedShape.getType());
+
+      Shape clonedShape2 = (Shape) ShapeCache.getShape("2");
+      System.out.println("Shape : " + clonedShape2.getType());
+
+      Shape clonedShape3 = (Shape) ShapeCache.getShape("3");
+      System.out.println("Shape : " + clonedShape3.getType());
+   }
+}
+</pre>
+<h2>Step 5</h2>
+<p>Verify the output.</p>
+<pre class="result">
+Shape : Circle
+Shape : Square
+Shape : Rectangle
+</pre>
+</body>
+</html>

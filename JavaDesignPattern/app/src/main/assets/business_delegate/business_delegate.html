@@ -1,0 +1,125 @@
+<html>
+<head>
+    <link rel="stylesheet" href="file:///android_asset/designpattern.css" type="text/css" />
+</head>
+<body>
+<p>Business Delegate Pattern is used to decouple presentation tier and business tier. It is basically use to reduce communication or remote lookup functionality to business tier code in presentation tier code. In business tier we have following entities.</p>
+<ul class="list">
+    <li><p><b>Client</b> - Presentation tier code may be JSP, servlet or UI java code.</p></li>
+    <li><p><b>Business Delegate</b> - A single entry point class for client entities to provide access to Business Service methods.</p></li>
+    <li><p><b>LookUp Service</b> - Lookup service object is responsible to get relative business implementation and provide business object access to business delegate object.</p></li>
+    <li><p><b>Business Service</b> - Business Service interface. Concrete classes implement this business service to provide actual business implementation logic.</p></li>
+</ul>
+<h2>Implementation</h2>
+<p>We are going to create a <i>Client</i>, <i>BusinessDelegate</i>, <i>BusinessService</i>, <i>LookUpService</i>, <i>JMSService</i> and <i>EJBService</i> representing various entities of Business Delegate patterns.</p>
+<p><i>BusinessDelegatePatternDemo</i>, our demo class, will use <i>BusinessDelegate</i> and <i>Client</i> to demonstrate use of Business Delegate pattern.</p>
+<img src="file:///android_asset/business_delegate/business_delegate_pattern_uml_diagram.jpg" alt="Business Delegate Pattern UML Diagram" />
+<h2>Step 1</h2>
+<p>Create BusinessService Interface.</p>
+<p><i>BusinessService.java</i></p>
+<pre class="prettyprint notranslate">
+public interface BusinessService {
+   public void doProcessing();
+}
+</pre>
+<h2>Step 2</h2>
+<p>Create concrete Service classes.</p>
+<p><i>EJBService.java</i></p>
+<pre class="prettyprint notranslate">
+public class EJBService implements BusinessService {
+
+   @Override
+   public void doProcessing() {
+      System.out.println("Processing task by invoking EJB Service");
+   }
+}
+</pre>
+<p><i>JMSService.java</i></p>
+<pre class="prettyprint notranslate">
+public class JMSService implements BusinessService {
+
+   @Override
+   public void doProcessing() {
+      System.out.println("Processing task by invoking JMS Service");
+   }
+}
+</pre>
+<h2>Step 3</h2>
+<p>Create Business Lookup Service.</p>
+<p><i>BusinessLookUp.java</i></p>
+<pre class="prettyprint notranslate">
+public class BusinessLookUp {
+   public BusinessService getBusinessService(String serviceType){
+
+      if(serviceType.equalsIgnoreCase("EJB")){
+         return new EJBService();
+      }
+      else {
+         return new JMSService();
+      }
+   }
+}
+</pre>
+<h2>Step 4</h2>
+<p>Create Business Delegate.</p>
+<p><i>BusinessDelegate.java</i></p>
+<pre class="prettyprint notranslate">
+public class BusinessDelegate {
+   private BusinessLookUp lookupService = new BusinessLookUp();
+   private BusinessService businessService;
+   private String serviceType;
+
+   public void setServiceType(String serviceType){
+      this.serviceType = serviceType;
+   }
+
+   public void doTask(){
+      businessService = lookupService.getBusinessService(serviceType);
+      businessService.doProcessing();
+   }
+}
+</pre>
+<h2>Step 5</h2>
+<p>Create Client.</p>
+<p><i>Client.java</i></p>
+<pre class="prettyprint notranslate">
+public class Client {
+
+   BusinessDelegate businessService;
+
+   public Client(BusinessDelegate businessService){
+      this.businessService  = businessService;
+   }
+
+   public void doTask(){
+      businessService.doTask();
+   }
+}
+</pre>
+<h2>Step 6</h2>
+<p>Use BusinessDelegate and Client classes to demonstrate Business Delegate pattern.</p>
+<p><i>BusinessDelegatePatternDemo.java</i></p>
+<pre class="prettyprint notranslate">
+public class BusinessDelegatePatternDemo {
+
+   public static void main(String[] args) {
+
+      BusinessDelegate businessDelegate = new BusinessDelegate();
+      businessDelegate.setServiceType("EJB");
+
+      Client client = new Client(businessDelegate);
+      client.doTask();
+
+      businessDelegate.setServiceType("JMS");
+      client.doTask();
+   }
+}
+</pre>
+<h2>Step 7</h2>
+<p>Verify the output.</p>
+<pre class="result">
+Processing task by invoking EJB Service
+Processing task by invoking JMS Service
+</pre>
+</body>
+</html>

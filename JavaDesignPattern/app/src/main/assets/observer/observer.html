@@ -1,0 +1,131 @@
+<html>
+<head>
+    <link rel="stylesheet" href="file:///android_asset/designpattern.css" type="text/css" />
+</head>
+<body>
+<p>Observer pattern is used when there is one-to-many relationship between objects such as if one object is modified, its depenedent objects are to be notified automatically. Observer pattern falls under behavioral pattern category.</p>
+<h2>Implementation</h2>
+<p>Observer pattern uses three actor classes. Subject, Observer and Client. Subject is an object having methods to attach and detach observers to a client object. We have created an abstract class <i>Observer</i> and a concrete class <i>Subject</i> that is extending class <i>Observer</i>.
+<p><i>ObserverPatternDemo</i>, our demo class, will use <i>Subject</i> and concrete class object to show observer pattern in action.</p>
+<img src="file:///android_asset/observer/observer_pattern_uml_diagram.jpg" alt="Observer Pattern UML Diagram" />
+<h2>Step 1</h2>
+<p>Create Subject class.</p>
+<p><i>Subject.java</i></p>
+<pre class="prettyprint notranslate">
+import java.util.ArrayList;
+import java.util.List;
+
+public class Subject {
+
+   private List&lt;Observer&gt; observers = new ArrayList&lt;Observer&gt;();
+   private int state;
+
+   public int getState() {
+      return state;
+   }
+
+   public void setState(int state) {
+      this.state = state;
+      notifyAllObservers();
+   }
+
+   public void attach(Observer observer){
+      observers.add(observer);
+   }
+
+   public void notifyAllObservers(){
+      for (Observer observer : observers) {
+         observer.update();
+      }
+   }
+}
+</pre>
+<h2>Step 2</h2>
+<p>Create Observer class.</p>
+<p><i>Observer.java</i></p>
+<pre class="prettyprint notranslate">
+public abstract class Observer {
+   protected Subject subject;
+   public abstract void update();
+}
+</pre>
+<h2>Step 3</h2>
+<p>Create concrete observer classes</p>
+<p><i>BinaryObserver.java</i></p>
+<pre class="prettyprint notranslate">
+public class BinaryObserver extends Observer{
+
+   public BinaryObserver(Subject subject){
+      this.subject = subject;
+      this.subject.attach(this);
+   }
+
+   @Override
+   public void update() {
+      System.out.println( "Binary String: " + Integer.toBinaryString( subject.getState() ) );
+   }
+}
+</pre>
+<p><i>OctalObserver.java</i></p>
+<pre class="prettyprint notranslate">
+public class OctalObserver extends Observer{
+
+   public OctalObserver(Subject subject){
+      this.subject = subject;
+      this.subject.attach(this);
+   }
+
+   @Override
+   public void update() {
+     System.out.println( "Octal String: " + Integer.toOctalString( subject.getState() ) );
+   }
+}
+</pre>
+<p><i>HexaObserver.java</i></p>
+<pre class="prettyprint notranslate">
+public class HexaObserver extends Observer{
+
+   public HexaObserver(Subject subject){
+      this.subject = subject;
+      this.subject.attach(this);
+   }
+
+   @Override
+   public void update() {
+      System.out.println( "Hex String: " + Integer.toHexString( subject.getState() ).toUpperCase() );
+   }
+}
+</pre>
+<h2>Step 4</h2>
+<p>Use <i>Subject</i> and concrete observer objects.</p>
+<p><i>ObserverPatternDemo.java</i></p>
+<pre class="prettyprint notranslate">
+public class ObserverPatternDemo {
+   public static void main(String[] args) {
+      Subject subject = new Subject();
+
+      new HexaObserver(subject);
+      new OctalObserver(subject);
+      new BinaryObserver(subject);
+
+      System.out.println("First state change: 15");
+      subject.setState(15);
+      System.out.println("Second state change: 10");
+      subject.setState(10);
+   }
+}
+</pre>
+<h2>Step 5</h2>
+<p>Verify the output.</p>
+<pre class="result">
+First state change: 15
+Hex String: F
+Octal String: 17
+Binary String: 1111
+Second state change: 10
+Hex String: A
+Octal String: 12
+Binary String: 1010
+</pre>
+</body>
+</html>

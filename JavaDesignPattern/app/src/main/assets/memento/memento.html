@@ -1,0 +1,105 @@
+<html>
+<head>
+    <link rel="stylesheet" href="file:///android_asset/designpattern.css" type="text/css" />
+</head>
+<body>
+<p>Memento pattern is used to restore state of an object to a previous state. Memento pattern falls under behavioral pattern category.</p>
+<h2>Implementation</h2>
+<p>Memento pattern uses three actor classes. Memento contains state of an object to be restored. Originator creates and stores states in Memento objects and Caretaker object is responsible to restore object state from Memento. We have created classes <i>Memento</i>, <i>Originator</i> and <i>CareTaker</i>.
+<p><i>MementoPatternDemo</i>, our demo class, will use <i>CareTaker</i> and <i>Originator</i> objects to show restoration of object states.</p>
+<img src="file:///android_asset/memento/memento_pattern_uml_diagram.jpg" alt="Memento Pattern UML Diagram" />
+<h2>Step 1</h2>
+<p>Create Memento class.</p>
+<p><i>Memento.java</i></p>
+<pre class="prettyprint notranslate">
+public class Memento {
+   private String state;
+
+   public Memento(String state){
+      this.state = state;
+   }
+
+   public String getState(){
+      return state;
+   }
+}
+</pre>
+<h2>Step 2</h2>
+<p>Create Originator class</p>
+<p><i>Originator.java</i></p>
+<pre class="prettyprint notranslate">
+public class Originator {
+   private String state;
+
+   public void setState(String state){
+      this.state = state;
+   }
+
+   public String getState(){
+      return state;
+   }
+
+   public Memento saveStateToMemento(){
+      return new Memento(state);
+   }
+
+   public void getStateFromMemento(Memento Memento){
+      state = Memento.getState();
+   }
+}
+</pre>
+<h2>Step 3</h2>
+<p>Create CareTaker class</p>
+<p><i>CareTaker.java</i></p>
+<pre class="prettyprint notranslate">
+import java.util.ArrayList;
+import java.util.List;
+
+public class CareTaker {
+   private List&lt;Memento&gt; mementoList = new ArrayList&lt;Memento&gt;();
+
+   public void add(Memento state){
+      mementoList.add(state);
+   }
+
+   public Memento get(int index){
+      return mementoList.get(index);
+   }
+}
+</pre>
+<h2>Step 4</h2>
+<p>Use <i>CareTaker</i> and <i>Originator</i> objects.</p>
+<p><i>MementoPatternDemo.java</i></p>
+<pre class="prettyprint notranslate">
+public class MementoPatternDemo {
+   public static void main(String[] args) {
+
+      Originator originator = new Originator();
+      CareTaker careTaker = new CareTaker();
+
+      originator.setState("State #1");
+      originator.setState("State #2");
+      careTaker.add(originator.saveStateToMemento());
+
+      originator.setState("State #3");
+      careTaker.add(originator.saveStateToMemento());
+
+      originator.setState("State #4");
+      System.out.println("Current State: " + originator.getState());
+
+      originator.getStateFromMemento(careTaker.get(0));
+      System.out.println("First saved State: " + originator.getState());
+      originator.getStateFromMemento(careTaker.get(1));
+      System.out.println("Second saved State: " + originator.getState());
+   }
+}
+</pre>
+<h2>Step 5</h2>
+<p>Verify the output.</p>
+<pre class="result">
+Current State: State #4
+First saved State: State #2
+Second saved State: State #3
+</pre>
+</body>
+</html>

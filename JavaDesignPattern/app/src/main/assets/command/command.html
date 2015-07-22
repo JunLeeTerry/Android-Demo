@@ -1,0 +1,117 @@
+<html>
+<head>
+    <link rel="stylesheet" href="file:///android_asset/designpattern.css" type="text/css" />
+</head>
+<body>
+<p>Command pattern is a data driven design pattern and falls under behavioral pattern category. A request is wrapped under an object as command and passed to invoker object. Invoker object looks for the appropriate object which can handle this command and passes the command to the corresponding object which executes the command.<p>
+<h2>Implementation</h2>
+<p>We have created an interface <i>Order</i> which is acting as a command. We have created a <i>Stock</i> class which acts as a request. We have concrete command classes <i>BuyStock</i> and <i>SellStock</i> implementing <i>Order</i> interface which will do actual command processing. A class <i>Broker</i> is created which acts as an invoker object. It can take and place orders.</p>
+<p><i>Broker</i> object uses command pattern to identify which object will execute which command based on the type of command. <i>CommandPatternDemo</i>, our demo class, will use <i>Broker</i> class to demonstrate command pattern.</p>
+<img src="file:///android_asset/command/command_pattern_uml_diagram.jpg" alt="Command Pattern UML Diagram" />
+<h2>Step 1</h2>
+<p>Create a command interface.</p>
+<p><i>Order.java</i></p>
+<pre class="prettyprint notranslate">
+public interface Order {
+   void execute();
+}
+</pre>
+<h2>Step 2</h2>
+<p>Create a request class.</p>
+<p><i>Stock.java</i></p>
+<pre class="prettyprint notranslate">
+public class Stock {
+
+   private String name = "ABC";
+   private int quantity = 10;
+
+   public void buy(){
+      System.out.println("Stock [ Name: "+name+",
+         Quantity: " + quantity +" ] bought");
+   }
+   public void sell(){
+      System.out.println("Stock [ Name: "+name+",
+         Quantity: " + quantity +" ] sold");
+   }
+}
+</pre>
+<h2>Step 3</h2>
+<p>Create concrete classes implementing the <i>Order</i> interface.</p>
+<p><i>BuyStock.java</i></p>
+<pre class="prettyprint notranslate">
+public class BuyStock implements Order {
+   private Stock abcStock;
+
+   public BuyStock(Stock abcStock){
+      this.abcStock = abcStock;
+   }
+
+   public void execute() {
+      abcStock.buy();
+   }
+}
+</pre>
+<p><i>SellStock.java</i></p>
+<pre class="prettyprint notranslate">
+public class SellStock implements Order {
+   private Stock abcStock;
+
+   public SellStock(Stock abcStock){
+      this.abcStock = abcStock;
+   }
+
+   public void execute() {
+      abcStock.sell();
+   }
+}
+</pre>
+<h2>Step 4</h2>
+<p>Create command invoker class.</p>
+<p><i>Broker.java</i></p>
+<pre class="prettyprint notranslate">
+import java.util.ArrayList;
+import java.util.List;
+
+   public class Broker {
+   private List&lt;Order&gt; orderList = new ArrayList&lt;Order&gt;();
+
+   public void takeOrder(Order order){
+      orderList.add(order);
+   }
+
+   public void placeOrders(){
+
+      for (Order order : orderList) {
+         order.execute();
+      }
+      orderList.clear();
+   }
+}
+</pre>
+<h2>Step 5</h2>
+<p>Use the Broker class to take and execute commands.</p>
+<p><i>CommandPatternDemo.java</i></p>
+<pre class="prettyprint notranslate">
+public class CommandPatternDemo {
+   public static void main(String[] args) {
+      Stock abcStock = new Stock();
+
+      BuyStock buyStockOrder = new BuyStock(abcStock);
+      SellStock sellStockOrder = new SellStock(abcStock);
+
+      Broker broker = new Broker();
+      broker.takeOrder(buyStockOrder);
+      broker.takeOrder(sellStockOrder);
+
+      broker.placeOrders();
+   }
+}
+</pre>
+<h2>Step 6</h2>
+<p>Verify the output.</p>
+<pre class="result">
+Stock [ Name: ABC, Quantity: 10 ] bought
+Stock [ Name: ABC, Quantity: 10 ] sold
+</pre>
+</body>
+</html>

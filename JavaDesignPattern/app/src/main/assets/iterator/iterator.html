@@ -1,0 +1,89 @@
+<html>
+<head>
+    <link rel="stylesheet" href="file:///android_asset/designpattern.css" type="text/css" />
+</head>
+<body>
+<p>Iterator pattern is very commonly used design pattern in Java and .Net programming environment. This pattern is used to get a way to access the elements of a collection object in sequential manner without any need to know its underlying representation. </p>
+<p>Iterator pattern falls under behavioral pattern category.</p>
+<h2>Implementation</h2>
+<p>We're going to create a <i>Iterator</i> interface which narrates navigation method and a <i>Container</i> interface which retruns the iterator . Concrete classes implementing the <i>Container</i> interface will be responsible to implement <i>Iterator</i> interface and use it </p>
+<p><i>IteratorPatternDemo</i>, our demo class will use <i>NamesRepository</i>, a concrete class implementation to print a <i>Names</i> stored as a collection in <i>NamesRepository</i>.</p>
+<img src="file:///android_asset/iterator/iterator_pattern_uml_diagram.jpg" alt="Iterator Pattern UML Diagram" />
+<h2>Step 1</h2>
+<p>Create interfaces.</p>
+<p><i>Iterator.java</i></p>
+<pre class="prettyprint notranslate">
+public interface Iterator {
+   public boolean hasNext();
+   public Object next();
+}
+</pre>
+<p><i>Container.java</i></p>
+<pre class="prettyprint notranslate">
+public interface Container {
+   public Iterator getIterator();
+}
+</pre>
+<h2>Step 2</h2>
+<p>Create concrete class implementing the <i>Container</i> interface. This class has inner class <i>NameIterator</i> implementing the <i>Iterator</i> interface.</p>
+<p><i>NameRepository.java</i></p>
+<pre class="prettyprint notranslate">
+public class NameRepository implements Container {
+   public String names[] = {"Robert" , "John" ,"Julie" , "Lora"};
+
+   @Override
+   public Iterator getIterator() {
+      return new NameIterator();
+   }
+
+   private class NameIterator implements Iterator {
+
+      int index;
+
+      @Override
+      public boolean hasNext() {
+
+         if(index &lt; names.length){
+            return true;
+         }
+         return false;
+      }
+
+      @Override
+      public Object next() {
+
+         if(this.hasNext()){
+            return names[index++];
+         }
+         return null;
+      }
+   }
+}
+</pre>
+
+<h2>Step 3</h2>
+<p>Use the <i>NameRepository</i> to get iterator and print names.</p>
+<p><i>IteratorPatternDemo.java</i></p>
+<pre class="prettyprint notranslate">
+public class IteratorPatternDemo {
+
+   public static void main(String[] args) {
+      NameRepository namesRepository = new NameRepository();
+
+      for(Iterator iter = namesRepository.getIterator(); iter.hasNext();){
+         String name = (String)iter.next();
+         System.out.println("Name : " + name);
+      }
+   }
+}
+</pre>
+<h2>Step 4</h2>
+<p>Verify the output.</p>
+<pre class="result">
+Name : Robert
+Name : John
+Name : Julie
+Name : Lora
+</pre>
+</body>
+</html>

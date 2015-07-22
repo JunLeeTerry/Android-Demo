@@ -1,0 +1,170 @@
+<html>
+<head>
+    <link rel="stylesheet" href="file:///android_asset/designpattern.css" type="text/css" />
+</head>
+<body>
+<p>The service locator design pattern is used when we want to locate various services using JNDI lookup. Considering high cost of looking up JNDI for a service, Service Locator pattern makes use of caching technique. For the first time a service is required, Service Locator looks up in JNDI and caches the service object. Further lookup or same service via Service Locator is done in its cache which improves the performance of application to great extent. Following are the entities of this type of design pattern.</p>
+<ul class="list">
+    <li><p><b>Service</b> - Actual Service which will process the request. Reference of such service is to be looked upon in JNDI server.</p></li>
+    <li><p><b>Context / Initial Context</b> - JNDI Context carries the reference to service used for lookup purpose.</p></li>
+    <li><p><b>Service Locator</b> - Service Locator is a single point of contact to get services by JNDI lookup caching the services.</p></li>
+    <li><p><b>Cache</b> - Cache to store references of services to reuse them</p></li>
+    <li><p><b>Client</b> - Client is the object that invokes the services via ServiceLocator.</p></li>
+</ul>
+<h2>Implementation</h2>
+<p>We are going to create a <i>ServiceLocator</i>,<i>InitialContext</i>, <i>Cache</i>, <i>Service</i> as various objects representing our entities.<i>Service1</i> and <i>Service2</i> represent concrete services.</p>
+<p><i>ServiceLocatorPatternDemo</i>, our demo class, is acting as a client here and will use <i>ServiceLocator</i> to demonstrate Service Locator Design Pattern.</p>
+<img src="file:///android_asset/service_locator/servicelocator_pattern_uml_diagram.jpg" alt="Service Locator Pattern UML Diagram" />
+<h2>Step 1</h2>
+<p>Create Service interface.</p>
+<p><i>Service.java</i></p>
+<pre class="prettyprint notranslate">
+public interface Service {
+   public String getName();
+   public void execute();
+}
+</pre>
+<h2>Step 2</h2>
+<p>Create concrete services.</p>
+<p><i>Service1.java</i></p>
+<pre class="prettyprint notranslate">
+public class Service1 implements Service {
+   public void execute(){
+      System.out.println("Executing Service1");
+   }
+
+   @Override
+   public String getName() {
+      return "Service1";
+   }
+}
+</pre>
+<p><i>Service2.java</i></p>
+<pre class="prettyprint notranslate">
+public class Service2 implements Service {
+   public void execute(){
+      System.out.println("Executing Service2");
+   }
+
+   @Override
+   public String getName() {
+      return "Service2";
+   }
+}
+</pre>
+<h2>Step 3</h2>
+<p>Create InitialContext for JNDI lookup</p>
+<p><i>InitialContext.java</i></p>
+<pre class="prettyprint notranslate">
+public class InitialContext {
+   public Object lookup(String jndiName){
+
+      if(jndiName.equalsIgnoreCase("SERVICE1")){
+         System.out.println("Looking up and creating a new Service1 object");
+         return new Service1();
+      }
+      else if (jndiName.equalsIgnoreCase("SERVICE2")){
+         System.out.println("Looking up and creating a new Service2 object");
+         return new Service2();
+      }
+      return null;
+   }
+}
+</pre>
+<h2>Step 4</h2>
+<p>Create Cache</p>
+<p><i>Cache.java</i></p>
+<pre class="prettyprint notranslate">
+import java.util.ArrayList;
+import java.util.List;
+
+public class Cache {
+
+   private List&lt;Service&gt; services;
+
+   public Cache(){
+      services = new ArrayList&lt;Service&gt;();
+   }
+
+   public Service getService(String serviceName){
+
+      for (Service service : services) {
+         if(service.getName().equalsIgnoreCase(serviceName)){
+            System.out.println("Returning cached  " + serviceName + " object");
+            return service;
+         }
+      }
+      return null;
+   }
+
+   public void addService(Service newService){
+      boolean exists = false;
+
+      for (Service service : services) {
+         if(service.getName().equalsIgnoreCase(newService.getName())){
+            exists = true;
+         }
+      }
+      if(!exists){
+         services.add(newService);
+      }
+   }
+}
+</pre>
+<h2>Step 5</h2>
+<p>Create Service Locator</p>
+<p><i>ServiceLocator.java</i></p>
+<pre class="prettyprint notranslate">
+public class ServiceLocator {
+   private static Cache cache;
+
+   static {
+      cache = new Cache();
+   }
+
+   public static Service getService(String jndiName){
+
+      Service service = cache.getService(jndiName);
+
+      if(service != null){
+         return service;
+      }
+
+      InitialContext context = new InitialContext();
+      Service service1 = (Service)context.lookup(jndiName);
+      cache.addService(service1);
+      return service1;
+   }
+}
+</pre>
+<h2>Step 6</h2>
+<p>Use the <i>ServiceLocator</i> to demonstrate Service Locator Design Pattern.</p>
+<p><i>ServiceLocatorPatternDemo.java</i></p>
+<pre class="prettyprint notranslate">
+public class ServiceLocatorPatternDemo {
+   public static void main(String[] args) {
+      Service service = ServiceLocator.getService("Service1");
+      service.execute();
+      service = ServiceLocator.getService("Service2");
+      service.execute();
+      service = ServiceLocator.getService("Service1");
+      service.execute();
+      service = ServiceLocator.getService("Service2");
+      service.execute();
+   }
+}
+</pre>
+<h2>Step 7</h2>
+<p>Verify the output.</p>
+<pre class="result">
+Looking up and creating a new Service1 object
+Executing Service1
+Looking up and creating a new Service2 object
+Executing Service2
+Returning cached  Service1 object
+Executing Service1
+Returning cached  Service2 object
+Executing Service2
+</pre>
+</body>
+</html>

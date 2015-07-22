@@ -1,0 +1,118 @@
+<html>
+<head>
+    <link rel="stylesheet" href="file:///android_asset/designpattern.css" type="text/css" />
+</head>
+<body>
+<p>The Transfer Object pattern is used when we want to pass data with multiple attributes in one shot from client to server. Transfer object is also known as Value Object. Transfer Object is a simple POJO class having getter/setter methods and is serializable so that it can be transferred over the network. It does not have any behavior. Server Side business class normally fetches data from the database and fills the POJO and send it to the client or pass it by value. For client, transfer object is read-only. Client can create its own transfer object and pass it to server to update values in database in one shot. Following are the entities of this type of design pattern.</p>
+<ul class="list">
+    <li><p><b>Business Object</b> - Business Service fills the Transfer Object with data.</p></li>
+    <li><p><b>Transfer Object</b> - Simple POJO having methods to set/get attributes only.</p></li>
+    <li><p><b>Client</b> - Client either requests or sends the Transfer Object to Business Object.</p></li>
+</ul>
+<h2>Implementation</h2>
+<p>We are going to create a <i>StudentBO</i> as Business Object,<i>Student</i> as Transfer Object representing our entities.
+<p><i>TransferObjectPatternDemo</i>, our demo class, is acting as a client here and will use <i>StudentBO</i> and  <i>Student</i> to demonstrate Transfer Object Design Pattern.</p>
+<img src="file:///android_asset/transfer_object/transferobject_pattern_uml_diagram.jpg" alt="Transfer Object Pattern UML Diagram" />
+<h2>Step 1</h2>
+<p>Create Transfer Object.</p>
+<p><i>StudentVO.java</i></p>
+<pre class="prettyprint notranslate">
+public class StudentVO {
+   private String name;
+   private int rollNo;
+
+   StudentVO(String name, int rollNo){
+      this.name = name;
+      this.rollNo = rollNo;
+   }
+
+   public String getName() {
+      return name;
+   }
+
+   public void setName(String name) {
+      this.name = name;
+   }
+
+   public int getRollNo() {
+      return rollNo;
+   }
+
+   public void setRollNo(int rollNo) {
+      this.rollNo = rollNo;
+   }
+}
+</pre>
+<h2>Step 2</h2>
+<p>Create Business Object.</p>
+<p><i>StudentBO.java</i></p>
+<pre class="prettyprint notranslate">
+import java.util.ArrayList;
+import java.util.List;
+
+public class StudentBO {
+
+   //list is working as a database
+   List&lt;StudentVO&gt; students;
+
+   public StudentBO(){
+      students = new ArrayList&lt;StudentVO&gt;();
+      StudentVO student1 = new StudentVO("Robert",0);
+      StudentVO student2 = new StudentVO("John",1);
+      students.add(student1);
+      students.add(student2);
+   }
+   public void deleteStudent(StudentVO student) {
+      students.remove(student.getRollNo());
+      System.out.println("Student: Roll No " + student.getRollNo() + ", deleted from database");
+   }
+
+   //retrive list of students from the database
+   public List&lt;StudentVO&gt; getAllStudents() {
+      return students;
+   }
+
+   public StudentVO getStudent(int rollNo) {
+      return students.get(rollNo);
+   }
+
+   public void updateStudent(StudentVO student) {
+      students.get(student.getRollNo()).setName(student.getName());
+      System.out.println("Student: Roll No " + student.getRollNo() +", updated in the database");
+   }
+}
+</pre>
+<h2>Step 3</h2>
+<p>Use the <i>StudentBO</i> to demonstrate Transfer Object Design Pattern.</p>
+<p><i>TransferObjectPatternDemo.java</i></p>
+<pre class="prettyprint notranslate">
+public class TransferObjectPatternDemo {
+   public static void main(String[] args) {
+      StudentBO studentBusinessObject = new StudentBO();
+
+      //print all students
+      for (StudentVO student : studentBusinessObject.getAllStudents()) {
+         System.out.println("Student: [RollNo : " + student.getRollNo() + ", Name : " + student.getName() + " ]");
+      }
+
+      //update student
+      StudentVO student = studentBusinessObject.getAllStudents().get(0);
+      student.setName("Michael");
+      studentBusinessObject.updateStudent(student);
+
+      //get the student
+      student = studentBusinessObject.getStudent(0);
+      System.out.println("Student: [RollNo : " + student.getRollNo() + ", Name : " + student.getName() + " ]");
+   }
+}
+</pre>
+<h2>Step 4</h2>
+<p>Verify the output.</p>
+<pre class="result">
+Student: [RollNo : 0, Name : Robert ]
+Student: [RollNo : 1, Name : John ]
+Student: Roll No 0, updated in the database
+Student: [RollNo : 0, Name : Michael ]
+</pre>
+</body>
+</html>

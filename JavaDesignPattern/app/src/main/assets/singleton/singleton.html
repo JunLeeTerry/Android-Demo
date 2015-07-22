@@ -1,0 +1,60 @@
+<html>
+<head>
+    <link rel="stylesheet" href="file:///android_asset/designpattern.css" type="text/css" />
+</head>
+<body>
+<p>Singleton pattern is one of the simplest design patterns in Java. This type of design pattern comes under creational pattern as this pattern provides one of the best ways to create an object.</p>
+<p>This pattern involves a single class which is responsible to create an object while making sure that only single object gets created. This class provides a way to access its only object which can be accessed directly without need to instantiate the object of the class.</p>
+<h2>Implementation</h2>
+<p>We're going to create a <i>SingleObject</i> class. <i>SingleObject</i> class have its constructor as private and have a static instance of itself.</p>
+<p><i>SingleObject</i> class provides a static method to get its static instance to outside world. <i>SingletonPatternDemo</i>, our demo class will use <i>SingleObject</i> class to get a <i>SingleObject</i> object.</p>
+<img src="file:///android_asset/singleton/singleton_pattern_uml_diagram.jpg" alt="Singleton Pattern UML Diagram" />
+<h2>Step 1</h2>
+<p>Create a Singleton Class.</p>
+<p><i>SingleObject.java</i></p>
+<pre class="prettyprint notranslate">
+public class SingleObject {
+
+   //create an object of SingleObject
+   private static SingleObject instance = new SingleObject();
+
+   //make the constructor private so that this class cannot be
+   //instantiated
+   private SingleObject(){}
+
+   //Get the only object available
+   public static SingleObject getInstance(){
+      return instance;
+   }
+
+   public void showMessage(){
+      System.out.println("Hello World!");
+   }
+}
+</pre>
+<h2>Step 2</h2>
+<p>Get the only object from the singleton class.</p>
+<p><i>SingletonPatternDemo.java</i></p>
+<pre class="prettyprint notranslate tryit">
+public class SingletonPatternDemo {
+   public static void main(String[] args) {
+
+      //illegal construct
+      //Compile Time Error: The constructor SingleObject() is not visible
+      //SingleObject object = new SingleObject();
+
+      //Get the only object available
+      SingleObject object = SingleObject.getInstance();
+
+      //show the message
+      object.showMessage();
+   }
+}
+</pre>
+<h2>Step 3</h2>
+<p>Verify the output.</p>
+<pre class="result">
+Hello World!
+</pre>
+</body>
+</html>
