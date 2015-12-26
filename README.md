@@ -1,4 +1,4 @@
 # android_app
 
--javadesignpattern release
+-javadesignpattern release  
 -foodsearch demo
